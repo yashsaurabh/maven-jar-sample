@@ -70,7 +70,15 @@ jobs:
       - name: Deploy to EC2 using SSH
         run: |
           ssh -i key.pem ubuntu@your-ec2-instance "cd /app && git pull && systemctl restart app.service"
-            
+          
+       
+      - name: Copy JAR to EC2
+        run: |
+          scp -i ${{ secrets.EC2_SSH_KEY }} target/your-app.jar ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/
+
+      - name: Run Application on EC2
+        run: |
+          ssh -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${{ secrets.EC2_HOST }} "java -jar /home/ec2-user/your-app.jar"     
   
     
       
